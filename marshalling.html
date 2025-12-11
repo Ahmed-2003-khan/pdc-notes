@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marshalling & CORBA Notes - Dark Mode</title>
+
+<style>
+    body {
+        background-color: #0d0d0d;
+        color: #e6e6e6;
+        font-family: Arial, sans-serif;
+        line-height: 1.7;
+        padding: 20px;
+    }
+    h1, h2, h3 {
+        color: #4da6ff;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #1a1a1a;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #333;
+        text-align: left;
+    }
+    th {
+        background: #000;
+    }
+    hr {
+        border: 0;
+        border-bottom: 1px solid #333;
+        margin: 30px 0;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Distributed Systems — Marshalling, CDR & Serialization</h1>
+
+<h2>📌 1. The Core Problem (Masla Kya Hai?)</h2>
+
+<p>Distributed systems mein computers alag alag hotay hain (Heterogeneity).</p>
+
+<ul>
+    <li><strong>Data Representation:</strong>
+        <ul>
+            <li><strong>Big-Endian:</strong> MSB (Most Significant Byte) pehle aata hai. (Insani tareeqa).</li>
+            <li><strong>Little-Endian:</strong> LSB (Least Significant Byte) pehle aata hai. (Ulta tareeqa).</li>
+            <li><em>Risk:</em> Agar <code>0x1234</code> bheja aur receiver ne ulta parha, to value change ho jayegi.</li>
+        </ul>
+    </li>
+    <li><strong>Character Coding:</strong>
+        <ul>
+            <li><strong>ASCII:</strong> 1 Byte per character (English only).</li>
+            <li><strong>Unicode:</strong> 2 Bytes per character (Multi-language).</li>
+        </ul>
+    </li>
+</ul>
+
+<hr>
+
+<h2>⚙️ 2. The Process (Kaam Kaise Hota Hai?)</h2>
+
+<p>Objects ko network par bhejne ka tareeqa:</p>
+
+<ol>
+    <li><strong>Flattening:</strong> Data structures ko tod kar <code>bytes</code> ki line banana.</li>
+    <li><strong>Marshalling:</strong> Data ko agreed format mein pack karna (Encoding).</li>
+    <li><strong>Transmission:</strong> Message network par jata hai.</li>
+    <li><strong>Unmarshalling:</strong> Bytes ko wapas jod kar Data/Object banana (Decoding).</li>
+</ol>
+
+<hr>
+
+<h2>🛠️ 3. Three Approaches (Comparison)</h2>
+
+<p>Exam mein aksar "Difference" pucha jata hai.</p>
+
+<table>
+<thead>
+<tr>
+    <th>Feature</th>
+    <th>CORBA CDR</th>
+    <th>Java Serialization</th>
+    <th>XML</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Type</td><td>Binary (0s & 1s)</td><td>Binary</td><td>Text-based</td>
+</tr>
+<tr>
+    <td>Speed</td><td>Fast & Compact</td><td>Fast</td><td>Slow & Heavy (Tags ki wajah se)</td>
+</tr>
+<tr>
+    <td>Language</td><td>Multi-language (C++, Java, etc.)</td><td><strong>Java Only</strong></td><td>Universal (Web Services)</td>
+</tr>
+<tr>
+    <td>Metadata</td><td>Type info <strong>Nahi</strong> bhejta (Sirf values)</td><td>Type info <strong>Bhejta</strong> hai</td><td>Tags khud type batate hain</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<h2>🧮 4. CORBA CDR Rules (Most Important for Numericals)</h2>
+
+<p>Agar exam mein calculation aaye, to ye rules yaad rakhein:</p>
+
+<ul>
+    <li><strong>Primitive Types:</strong>
+        <ul>
+            <li><strong>Char:</strong> 1 Byte (Kahin bhi aa sakta hai).</li>
+            <li><strong>Short:</strong> 2 Bytes (Start index <strong>Even</strong> hona chahiye: 0, 2, 4...).</li>
+            <li><strong>Long / Float / Enum:</strong> 4 Bytes (Start index <strong>Multiple of 4</strong> hona chahiye: 0, 4, 8...).</li>
+            <li><strong>Double:</strong> 8 Bytes (Start index <strong>Multiple of 8</strong> hona chahiye).</li>
+        </ul>
+    </li>
+
+    <li><strong>Strings:</strong>
+        <ul>
+            <li>Pehle <strong>Length</strong> (Unsigned Long – 4 Bytes) aati hai → Phir <strong>Characters</strong>.</li>
+            <li><em>Note:</em> Length hamesha 4-byte boundary se shuru hogi.</li>
+        </ul>
+    </li>
+
+    <li><strong>Padding:</strong>
+        <ul>
+            <li>Agar agla data apni sahi jagah (Alignment) par nahi aa raha, to beech mein <strong>Zeroes (Padding)</strong> bharnay parengay.</li>
+        </ul>
+    </li>
+</ul>
+
+</body>
+</html>
