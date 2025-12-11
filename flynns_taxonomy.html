@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flynn's Taxonomy - Dark Mode</title>
+
+<style>
+    body {
+        background-color: #0d0d0d;
+        color: #e6e6e6;
+        font-family: Arial, sans-serif;
+        line-height: 1.7;
+        padding: 20px;
+    }
+    h1, h2, h3, h4 {
+        color: #4da6ff;
+    }
+    code, pre {
+        background: #1a1a1a;
+        padding: 10px;
+        border-radius: 6px;
+        display: block;
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #1a1a1a;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #333;
+        text-align: left;
+    }
+    th {
+        background: #000;
+    }
+    hr {
+        border: 0;
+        border-bottom: 1px solid #333;
+        margin: 30px 0;
+    }
+    .section {
+        margin-bottom: 40px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>📘 Flynn’s Taxonomy (Exam Focused Notes)</h1>
+
+<p><strong>Topic:</strong> Classification of Computer Architectures<br>
+<strong>Proposed by:</strong> Michael Flynn (1966)<br>
+<strong>Basis:</strong> Yeh classification 2 cheezon par base karti hai:</p>
+
+<ol>
+    <li><strong>Instruction Stream:</strong> (Command kya hai?)</li>
+    <li><strong>Data Stream:</strong> (Kis data par kaam ho raha hai?)</li>
+</ol>
+
+<hr>
+
+<div class="section">
+<h2>1. SISD (Single Instruction, Single Data)</h2>
+
+<ul>
+    <li><strong>Definition:</strong> Yeh architecture <strong>ek Processor</strong> use karta hai jo <strong>ek waqt mein ek Instruction</strong> ko <strong>ek hi Data Stream</strong> par execute karta hai.</li>
+    <li><strong>Working Mechanism:</strong>
+        <ul>
+            <li>Instructions line-by-line (sequential) chalti hain.</li>
+            <li>Parallel processing nahi hoti.</li>
+            <li>Data fetch aur execute hone ka process serial hota hai.</li>
+        </ul>
+    </li>
+    <li><strong>Key Characteristics:</strong>
+        <ul>
+            <li>Simplest architecture hai.</li>
+            <li>Speed limited hoti hai (Internal transfer rate par depend karti hai).</li>
+            <li>Isay <strong>"Sequential Computer"</strong> bhi kehte hain.</li>
+        </ul>
+    </li>
+    <li><strong>Examples:</strong> Traditional PCs, Old Mainframes, Single-core workstations.</li>
+</ul>
+</div>
+
+<hr>
+
+<div class="section">
+<h2>2. SIMD (Single Instruction, Multiple Data)</h2>
+
+<ul>
+    <li><strong>Definition:</strong> Yeh architecture <strong>Multiple Processors</strong> use karta hai jo sab <strong>Same Instruction</strong> follow karte hain lekin <strong>Alag Alag Data</strong> par kaam karte hain.</li>
+    <li><strong>Working Mechanism:</strong>
+        <ul>
+            <li>Control Unit ek command bhejta hai (e.g., "Multiply by 2").</li>
+            <li>Sab processors ek hi waqt mein (simultaneously) apne apne data hissay par ye command chalate hain.</li>
+            <li>Yeh <strong>Vector/Matrix operations</strong> ke liye best hai.</li>
+        </ul>
+    </li>
+    <li><strong>Key Characteristics:</strong>
+        <ul>
+            <li><strong>Lockstep Operation:</strong> Sab processors sync mein kaam karte hain.</li>
+            <li><strong>Categories (1972 Paper):</strong>
+                <ol>
+                    <li><strong>Array Processor:</strong> Har processor ki apni <strong>alag memory</strong> hoti hai.</li>
+                    <li><strong>Pipelined Processor:</strong> Instruction same hoti hai, data <strong>central resource</strong> se tukron (fragments) mein process hota hai.</li>
+                    <li><strong>Associative Processor:</strong> Har processor apne local data ke hisaab se <strong>faisla</strong> karta hai ke instruction man'ni hai ya skip karni hai (Predicated Execution).</li>
+                </ol>
+            </li>
+        </ul>
+    </li>
+    <li><strong>Examples:</strong> <strong>GPUs</strong> (Graphics Cards), Cray Supercomputers, Scientific Modeling.</li>
+</ul>
+</div>
+
+<hr>
+
+<div class="section">
+<h2>3. MISD (Multiple Instruction, Single Data)</h2>
+
+<ul>
+    <li><strong>Definition:</strong> Yeh architecture <strong>Multiple Processors</strong> use karta hai jo <strong>Alag Alag Instructions</strong> execute karte hain lekin <strong>Same Data Stream</strong> par.</li>
+    <li><strong>Working Mechanism:</strong>
+        <ul>
+            <li>Ek hi data multiple processors ke paas jata hai.</li>
+            <li>Har processor us data par different calculation karta hai.</li>
+        </ul>
+    </li>
+    <li><strong>Key Characteristics:</strong>
+        <ul>
+            <li><strong>Impractical:</strong> General computing mein iska koi khas use nahi hai.</li>
+            <li><strong>Fault Tolerance:</strong> Yeh sirf wahan use hota hai jahan checking karni ho (Redundancy).</li>
+            <li>Commercially available machines nahi miltin.</li>
+        </ul>
+    </li>
+    <li><strong>Examples:</strong> Space Shuttle Flight Control Systems.</li>
+</ul>
+</div>
+
+<hr>
+
+<div class="section">
+<h2>4. MIMD (Multiple Instruction, Multiple Data)</h2>
+
+<ul>
+    <li><strong>Definition:</strong> Yeh architecture <strong>Multiple Processors</strong> use karta hai jo <strong>Alag Alag Instructions</strong> aur <strong>Alag Alag Data</strong> par kaam karte hain.</li>
+    <li><strong>Working Mechanism:</strong>
+        <ul>
+            <li>Har processor independent hota hai.</li>
+            <li>Processors <strong>Asynchronously</strong> kaam karte hain.</li>
+            <li>Yeh true parallel computing hai.</li>
+        </ul>
+    </li>
+    <li><strong>Key Characteristics:</strong>
+        <ul>
+            <li><strong>Memory Models:</strong>
+                <ol>
+                    <li><strong>Shared Memory:</strong> Sab processors global memory use karte hain.</li>
+                    <li><strong>Distributed Memory:</strong> Har processor ki local memory hoti hai.</li>
+                </ol>
+            </li>
+            <li>Sabse zyada flexible aur powerful model hai.</li>
+        </ul>
+    </li>
+    <li><strong>Examples:</strong> Modern Multi-core PCs, Clusters, Supercomputers.</li>
+</ul>
+</div>
+
+<hr>
+
+<div class="section">
+<h2>5. Execution Models (MIMD Programming Styles)</h2>
+
+<p><em>(Yeh hardware nahi, software execution ka tareeqa hai)</em></p>
+
+<h3>A. SPMD (Single Program, Multiple Data)</h3>
+<ul>
+    <li><strong>Definition:</strong> Sab processors par <strong>Code same</strong> hota hai, Data alag.</li>
+    <li><strong>Logic:</strong> Processors apni marzi se code ke alag parts run kar sakte hain (Conditional paths).</li>
+    <li><strong>Use:</strong> AI, Deep Learning training.</li>
+</ul>
+
+<h3>B. MPMD (Multiple Program, Multiple Data)</h3>
+<ul>
+    <li><strong>Definition:</strong> Sab processors par <strong>Code bhi alag</strong> hota hai, Data bhi alag.</li>
+    <li><strong>Logic:</strong> Manager-Worker approach.</li>
+    <li><strong>Use:</strong> Heterogeneous systems.</li>
+</ul>
+</div>
+
+<hr>
+
+<h2>📝 Quick Exam Summary (Comparison Table)</h2>
+
+<table>
+<thead>
+<tr>
+    <th>Feature</th>
+    <th>SISD</th>
+    <th>SIMD</th>
+    <th>MISD</th>
+    <th>MIMD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>Instruction</td><td>Single</td><td>Single</td><td>Multiple</td><td>Multiple</td>
+</tr>
+<tr>
+    <td>Data</td><td>Single</td><td>Multiple</td><td>Single</td><td>Multiple</td>
+</tr>
+<tr>
+    <td>Speed</td><td>Slowest</td><td>Fast (for Vectors)</td><td>N/A</td><td>Fastest</td>
+</tr>
+<tr>
+    <td>Use Case</td><td>Basic PC</td><td>Graphics/Science</td><td>Fault Tolerance</td><td>Distributed Systems</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
