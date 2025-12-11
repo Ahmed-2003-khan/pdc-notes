@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Request-Reply Protocols & Failures - Notes</title>
+<style>
+    body {
+        background-color: #0d1117;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        line-height: 1.7;
+        padding: 30px;
+    }
+    h2, h3, h4 {
+        color: #58a6ff;
+    }
+    strong {
+        color: #ffcc66;
+    }
+    code {
+        background: #161b22;
+        padding: 3px 6px;
+        border-radius: 4px;
+        color: #ffa657;
+    }
+    ul {
+        margin-left: 20px;
+    }
+</style>
+</head>
+<body>
+
+<h2>Detailed Revision Notes: Request-Reply Protocols & Failures</h2>
+<h3>(Lecture #17 Summary)</h3>
+
+<h3>1. Failure Models (Requests Fail Kyun Hoti Hain?)</h3>
+<p>Sab se pehle samajhna zaroori hai ke distributed systems mein failures kis tarah ke hotay hain.</p>
+<ul>
+    <li><strong>UDP ke Maslay:</strong> Agar hum <code>UDP datagrams</code> use karein (jo <code>doOperation</code>, <code>getRequest</code>, <code>sendReply</code> ke liye hotay hain), toh humein 3 baray failures face karne partay hain:
+        <ul>
+            <li><strong>Omission Failures:</strong> Message ka rastay mein gum ho jana (Packet loss).</li>
+            <li><strong>Ordering Failures:</strong> Messages ka aagay-peechay deliver hona (Sequence guarantee nahi hoti).</li>
+            <li><strong>Process Failure:</strong> Server ya Client process ka crash ho jana.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Crash vs Byzantine:</strong> Hum assume karte hain ke processes mein sirf <strong>Crash Failures</strong> hotay hain. Woh <strong>Byzantine Behavior</strong> (ghalat data bhejna ya jhoot bolna) show nahi karte.</p>
+
+<h3>2. Timeouts & Retransmissions (Failures ko Handle Karna)</h3>
+<ul>
+    <li><strong>Timeout:</strong> Client hamesha intezar nahi kar sakta, isliye woh aik <strong>Timeout</strong> set karta hai.</li>
+    <li><strong>Do Options after Timeout:</strong>
+        <ul>
+            <li><em>Option 1 (Weak):</em> Foran return kar jaye aur failure report kare (recommended nahi).</li>
+            <li><em>Option 2 (Recommended): Retransmission.</em> Client request ko baar baar bhejta rehta hai jab tak reply na mil jaye.</li>
+        </ul>
+    </li>
+</ul>
+
+<h3>3. Duplicate Requests & Filtering</h3>
+<ul>
+    <li><strong>Problem:</strong> Agar Server pehli request par already kaam kar raha tha, aur duplicate aa jaye, toh woh same operation dobara run kar sakta hai.</li>
+    <li><strong>Solution:</strong> <strong>Request ID</strong> check ki jati hai. Duplicate ko filter/discard kiya jata hai.</li>
+</ul>
+
+<h3>4. Idempotency vs Non-Idempotency (Sab se Important Concept)</h3>
+<ul>
+    <li><strong>Idempotent Operations:</strong> Jitni baar execute karein, result same rehta hai (file read, set insert).
+        <ul><li>Server dobara execute kar deta hai — koi tension nahi.</li></ul>
+    </li>
+    <li><strong>Non-Idempotent Operations:</strong> Dobara execute karne se result change hota hai (append, bank transfer).
+        <ul><li>Server ko <strong>history</strong> maintain karni parti hai.</li></ul>
+    </li>
+</ul>
+
+<h3>5. History & Its Management</h3>
+<ul>
+    <li><strong>History Structure:</strong> Request ID, Message (Reply), Client ID.</li>
+    <li><strong>Logic:</strong> Duplicate aane par Server wahi purana reply retransmit karta hai.</li>
+    <li><strong>History Cleanup:</strong> Jab Client nayi request bhejta hai, server purani history delete kar deta hai.</li>
+</ul>
+
+<h3>6. Protocol Styles (R, RR, RRA)</h3>
+<ul>
+    <li><strong>R (Request):</strong> Sirf request — koi reply nahi. Use case: No return value needed.</li>
+    <li><strong>RR (Request-Reply):</strong> Most common. Reply = acknowledgement.</li>
+    <li><strong>RRA (Request-Reply-Acknowledge):</strong> Client reply milne ke baad ACK bhejta hai.  
+        <ul><li>Agar ACK gum ho jaye → harmless.</li></ul>
+    </li>
+</ul>
+
+<h3>7. Implementation: TCP Streams vs UDP</h3>
+<h4>UDP Issues</h4>
+<ul>
+    <li>Buffer size decide karna mushkil.</li>
+    <li>Packet size limit (≈ 8KB).</li>
+</ul>
+
+<h4>TCP Advantages</h4>
+<ul>
+    <li><strong>No Size Limit:</strong> Large data transferable.</li>
+    <li><strong>Reliability:</strong> Retransmission + duplicate filtering TCP khud handle karta hai.</li>
+    <li><strong>Flow Control:</strong> Receiver overwhelm nahi hota.</li>
+</ul>
+
+<h4>Exception: Sun NFS</h4>
+<ul>
+    <li>NFS UDP use karta hai kyunke blocks fixed-size hain + operations idempotent.</li>
+</ul>
+
+</body>
+</html>
