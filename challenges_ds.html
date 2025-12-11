@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Distributed Systems – Challenges Notes</title>
+
+<style>
+    body {
+        background-color: #0d1117;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        padding: 20px;
+    }
+    h2, h3 {
+        color: #58a6ff;
+    }
+    p, li {
+        font-size: 16px;
+    }
+    .section {
+        margin-bottom: 35px;
+        padding: 20px;
+        background: #161b22;
+        border-radius: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<h2>Lecture Overview: Challenges in Distributed Systems</h2>
+
+<div class="section">
+<p>Distributed Systems ka matlab hai jab bohot saray computers mil kar ek single system ki tarah kaam karein. Lekin jab computers alag alag jagah hotay hain aur alag alag types ke hotay hain, toh bohot saray maslay (challenges) aatay hain.</p>
+
+<p>Yeh lecture mainly <strong>4 Challenges</strong> ke baaray mein hai:</p>
+<ol>
+    <li><strong>Heterogeneity</strong> (Variety/Difference)</li>
+    <li><strong>Openness</strong> (Extendibility)</li>
+    <li><strong>Security</strong> (Hifazat)</li>
+    <li><strong>Scalability</strong> (Growth handle karna)</li>
+</ol>
+</div>
+
+<!-- 1. Heterogeneity -->
+<div class="section">
+<h3>1. Heterogeneity (Mukhtalif Qisam ki Cheezein)</h3>
+
+<p><strong>Concept:</strong><br>
+"Heterogeneity" ka simple matlab hai "variety" ya "different types". Distributed systems mein har cheez same nahi hoti.</p>
+
+<ul>
+    <li><strong>Networks:</strong> Koi WiFi use kar raha hai, koi Ethernet (LAN cable).</li>
+    <li><strong>Hardware:</strong> Kisi ke paas Intel processor hai, kisi ke paas Mac ka M1 chip. Data store karne ka tareeqa hardware ke hisaab se badal jata hai.</li>
+    <li><strong>Operating Systems:</strong> Windows, Linux, Mac — sabki system calls different hoti hain.</li>
+    <li><strong>Programming Languages:</strong> Java, C++, Python sab data ko alag tarah se handle karte hain.</li>
+</ul>
+
+<p><strong>Problem:</strong><br>
+Agar mera code Python mein Windows par chal raha hai, aur aapka code C++ mein Linux par, toh yeh aapas mein baat (communicate) kaise karenge?</p>
+
+<p><strong>Solution (Middleware & Virtual Machines):</strong></p>
+<ul>
+    <li><strong>Protocols:</strong> Internet ne yeh masla solve kiya. Sab IP protocol use karte hain.</li>
+    <li><strong>Middleware:</strong> Yeh differences ko mask kar deta hai, translator ki tarah kaam karta hai.</li>
+    <li><strong>Mobile Code & Virtual Machines (VM):</strong> Java ka code JVM par run hota hai, isliye har jagah chal jata hai.</li>
+</ul>
+</div>
+
+<!-- 2. Openness -->
+<div class="section">
+<h3>2. Openness (Khulaa System)</h3>
+
+<p><strong>Concept:</strong><br>
+Open system wo hota hai jisme naye features add karna aasaan ho bina purana system toray.</p>
+
+<p><strong>Key Requirement:</strong><br>
+Openness ke liye zaroori hai ke system ke <strong>Interfaces</strong> published hon.</p>
+
+<ul>
+    <li>Developers ko pata hona chahiye ke system se connect kaise karna hai.</li>
+    <li>Iske liye <strong>IDL (Interface Definition Language)</strong> use hoti hai — jo syntax batati hai.</li>
+    <li><strong>Challenge:</strong> IDL semantics nahi batati — yeh documentation se samajhna hota hai.</li>
+</ul>
+</div>
+
+<!-- 3. Security -->
+<div class="section">
+<h3>3. Security (Hifazat)</h3>
+
+<p><strong>Concept:</strong><br>
+Distributed systems mein data network par travel karta hai, isliye security bohot critical hai. Security ke 3 pillars hain:</p>
+
+<ul>
+    <li><strong>Confidentiality:</strong> Privacy.</li>
+    <li><strong>Integrity:</strong> Data change na ho.</li>
+    <li><strong>Availability:</strong> Server down na ho.</li>
+</ul>
+
+<p><strong>Solution:</strong></p>
+<ul>
+    <li><strong>Encryption:</strong> Data ko readable se code mein convert karta hai.</li>
+    <li><strong>Authentication:</strong> Passwords / OTPs / Biometrics se identity confirm hoti hai.</li>
+</ul>
+</div>
+
+<!-- 4. Scalability -->
+<div class="section">
+<h3>4. Scalability (Phelne ki Salaahiyat)</h3>
+
+<p><strong>Concept:</strong><br>
+Agar users 10 se barh kar 10 million ho jayen, toh system sustain kare — isay Scalability kehte hain.</p>
+
+<p><strong>3 Dimensions:</strong></p>
+<ul>
+    <li><strong>Size:</strong> Ziada users add ho sakein.</li>
+    <li><strong>Geographical:</strong> Dunya mein kahin bhi users hon — system slow na ho.</li>
+    <li><strong>Administrative:</strong> Multiple organizations mein manage ho sake.</li>
+</ul>
+
+<p><strong>Problems:</strong></p>
+<ul>
+    <li>Centralized server bottleneck.</li>
+    <li>Network latency — LAN fast, WAN slow.</li>
+</ul>
+</div>
+
+<!-- 5. Scaling Techniques -->
+<div class="section">
+<h3>5. Scaling Techniques (Solutions)</h3>
+
+<h4>A. Hiding Communication Latencies</h4>
+<p>Asynchronous communication — request bhej kar wait nahi karte, CPU aur kaam karta rehta hai.</p>
+
+<h4>B. Distribution (Kaam Baantna)</h4>
+<p><strong>DNS Example:</strong> Tree structure — load divide ho jata hai, searching fast ho jati hai.</p>
+
+<h4>C. Replication (Copy Banana)</h4>
+<p>Data ki copies multiple jagah rakhna — caching — load reduce hota hai.</p>
+
+</div>
+
+</body>
+</html>
