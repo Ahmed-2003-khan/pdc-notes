@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Notes</title>
+<style>
+    body {
+        background-color: #0d1117;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        padding: 20px;
+    }
+    h1, h2, h3 {
+        color: #58a6ff;
+    }
+    code, pre {
+        background: #161b22;
+        padding: 10px;
+        border-radius: 5px;
+        display: block;
+        color: #e6edf3;
+        overflow-x: auto;
+    }
+</style>
+</head>
+<body>
+
+<p>
+Concept 1: The Middleware Layer (Communication ka Pul)
+Sabse pehle yeh samajhna zaroori hai ke distributed computing mein hum seedha "network" se baat nahi karte.
+ * Detail: Computing world mein layers hoti hain. Sabse neeche Transport Layer hai (TCP/UDP) jo raw data packets le kar jati hai. Uske upar Middleware Layer hoti hai.
+ * Iska Kaam: Middleware ka maqsad "Abstraction" hai. Jab aap code likhte hain, toh aap socket.send() ya IP address ke chakkar mein nahi parna chahte. Middleware aapko allow karta hai ke aap processes ya objects ke level par baat karein, na ke packets ke level par.
+ * Intuition: Imagine karein aapko kisi ko letter bhejna hai.
+   * Transport Layer: Postman jo physical letter le kar ja raha hai.
+   * Middleware: Wo writing pad aur envelope standard jo ensure karta hai ke aapka letter sahi format mein ho taake doosri taraf banda usay parh sakay. Aapko bas letter likhna hai, delivery mechanism (UDP/TCP) middleware handle karega.
+Concept 2: Remote Invocation Paradigms (RPC vs RMI)
+Middleware ke upar kaam karne ke liye hum 3 models use karte hain. Inki technical detail yeh hai:
+1. Request-Reply Protocol:
+Yeh basic building block hai. Client ek message bhejta hai aur ruk jata hai (blocks) jab tak jawab na aaye. Is par detail agle section mein hai.
+2. Remote Procedure Call (RPC):
+ * Philosophy: Yeh "Procedural Programming" (C language style) ka extension hai.
+ * Mechanism: Client machine par Call Proc Y chalta hai. Programmer ko lagta hai yeh local function hai. Lekin internally, system is call ko pack karta hai, network par bhejta hai, server par Proc Y execute hota hai, aur result wapis aata hai.
+ * Transparency: Iska main maqsad yeh hai ke programmer ko pata hi na chale ke code remote chal raha hai. Client aur Server alag computers par ho sakte hain.
+3. Remote Method Invocation (RMI):
+ * Philosophy: Yeh "Object-Oriented Programming" (Java style) ka extension hai jo 1990s mein aaya.
+ * Mechanism: RPC sirf functions (procedures) ke liye tha. RMI mein ek Object (jo memory mein hai) kisi doosre computer par paray huay Object ke method ko invoke karta hai.
+ * Key Difference: RPC mein focus "Process" par hai, RMI mein focus "Object Identity" par hai.
+Concept 3: The Mechanics of Request-Reply (Technical Deep Dive)
+Yeh lecture ka sabse crucial technical part hai. Jab ek request hoti hai to 3 Primitives (Functions) sequence mein chalte hain. Is flow ko ghaur se samjhain:
+Step 1: Client Side - doOperation
+ * Client jab koi remote kaam karwana chahta hai to woh doOperation function call karta hai.
+ * Internal Work:
+   * Yeh function arguments (data) leta hai aur usay "Marshal" (bytes mein convert) karta hai.
+   * Yeh packet bhejta hai Server ko.
+   * Blocking: Sabse ehem baat yeh hai ke doOperation bhej kar wait karta hai (client process block ho jata hai) jab tak reply na aaye.
+Step 2: Server Side - getRequest
+ * Server ek loop mein hota hai aur getRequest call karke baitha hota hai.
+ * Jaise hi packet aata hai, Server usay receive karta hai aur dekhta hai ke "Kaunsa operation perform karna hai?" (Select Operation) .
+Step 3: Server Side - sendReply
+ * Operation execute hone ke baad, Server result ko pack karta hai aur sendReply ke zariye wapis Client ke IP aur Port par bhej deta hai.
+Step 4: Back to Client
+ * Client ka doOperation jo wait kar raha tha, woh reply receive karta hai, data ko "Unmarshal" (wapis readable format mein convert) karta hai aur program aage chalta hai.
+Why UDP is preferred here?
+Lecture mein likha hai ke yeh protocol aksar UDP par banta hai, TCP par nahi.
+ * Wajah: TCP connection banane mein pehle "Handshake" karta hai (Time waste). Request-Reply mein humein speed chahiye.
+ * Reliability: UDP reliable nahi hota, lekin Request-Reply protocol khud reliability sambhal leta hai. Agar Client ko reply mil gaya, toh iska matlab hai Server ne sun liya (Reply hi Acknowledgement hai).
+Concept 4: Message Structure & Identification (Tracking System)
+Jab network par hazaron messages urr rahay hon, toh system ko kaise pata chalta hai ke kaunsa reply kis request ka hai?
+Message Structure (Packet ke andar kya hai):
+ * messageType: 0 matlab Request, 1 matlab Reply.
+ * requestId: Ek unique number.
+ * remoteReference: Server ka address.
+ * operationId: Kaunsa method call karna hai (e.g., method #1, #2).
+ * arguments: Actual data (bytes mein).
+Identifier Logic (Unique ID kaise banti hai):
+System har message ko ek unique ID deta hai jo do cheezon se banti hai:
+ * requestId: Ek number jo barhta rehta hai (1, 2, 3...).
+ * Sender Identifier: Sender ka IP Address aur Port number.
+ * Faida: Agar Client ne requestId: 55 bheja, toh Server reply mein bhi requestId: 55 likh kar bhejega. Jab Client ko reply milega, woh check karega ke "Kya yeh 55 hi hai jiska main wait kar raha tha?" Agar nahi, toh woh usay discard kar dega (duplicate ya delayed message samajh kar).
+
+Question: Define the following networking architectures based on their key characteristics.
+1. Client-Server Architecture
+Concise Definition:
+Yeh ek centralized model hai jahan multiple clients services request karte hain aur unhein ek central server se response milta hai. Is model mein server hamesha active rehta hai taake woh multiple clients ko serve kar sakay.
+Primary Features (Classification):
+ * Centralization: Iska daromadar (dependence) ek central server par hota hai jo saara data store aur process karta hai.
+ * Communication Flow: Clients aapas mein direct baat nahi karte; woh sirf server ke through communicate karte hain.
+ * Scalability: Iski scalability limited hotti hai kyunki agar clients bohot zyada barh jayen toh server ki capacity choke ho sakti hai.
+ * Reliability: Isme "Single Point of Failure" ka risk hota hai—agar server down ho gaya, toh poora network ruk jayega.
+ * Resource Distribution: Sirf server resources provide karta hai, clients sirf consume karte hain.
+2. Peer-to-Peer (P2P) Architecture
+Concise Definition:
+Yeh ek decentralized model hai jahan har computer (jise "Peer" kehte hain) client aur server dono ka role ada karta hai. Isme kisi centralized server ki zaroorat nahi hoti.
+Primary Features (Classification):
+ * Decentralization: Yahan roles distribute hotay hain aur koi central boss nahi hota. Peers directly ek doosre se communicate karte hain.
+ * Resource Sharing: Har peer apne resources (jaise files, processing power) baqi network ke sath share karta hai.
+ * Scalability: Yeh highly scalable hai. Jab naye peers join karte hain, toh network ki capacity barhti hai kyunki wo apne resources bhi saath late hain.
+ * Reliability: Yeh system zyada reliable hai kyunki isme single point of failure nahi hota. Agar ek peer offline ho jaye, toh system chalta rehta hai.
+ * Cost Efficiency: Yeh cost-effective hai kyunki isme mehngay central servers maintain karne ki zaroorat nahi hoti.
+</p>
+
+</body>
+</html>
