@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Distributed Systems Notes - Dark Mode</title>
+  <style>
+    :root{
+      --bg:#0b0f12;
+      --panel:#0f1417;
+      --muted:#9aa4ad;
+      --text:#e6eef3;
+      --accent:#6ee7b7;
+      --border: rgba(255,255,255,0.04);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
+      --radius:12px;
+      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+      background: linear-gradient(180deg, #071017 0%, var(--bg) 100%);
+      color:var(--text);
+      margin:0;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      display:grid;
+      gap:20px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    header .title{
+      display:flex;
+      gap:16px;
+      align-items:baseline;
+    }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.2px;
+      font-weight:700;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow: 0 6px 20px rgba(2,6,10,0.6);
+      overflow:auto;
+    }
+
+    /* Content styling - preserve exact wording/formatting */
+    .content pre{
+      margin:0;
+      white-space:pre-wrap;
+      font-family: var(--mono);
+      font-size:15px;
+      line-height:1.45;
+      color:var(--text);
+    }
+
+    /* A subtle left gutter for section numbers */
+    .content pre::before{
+      content:"";
+      display:block;
+      height:8px;
+    }
+
+    footer{
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+      padding-top:8px;
+    }
+
+    /* Responsive */
+    @media (max-width:720px){
+      body{ padding:18px; }
+      .wrap{ gap:12px; }
+      .card{ padding:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Distributed Systems Notes</h1>
+        <div class="subtitle">Dark mode • Static webpage</div>
+      </div>
+      <div class="subtitle">Preserved original wording</div>
+    </header>
+
+    <main class="card">
+      <div class="content">
+<pre>1. Introduction to Distributed Systems
+Definition:
+
+
+
+A distributed system is a collection of independent computers that appear to its users as a single, coherent system.
+
+Hardware or software components communicate and coordinate their actions only by passing messages.
+
+Each node is a complete computer with its own peripherals, and nodes may run different operating systems.
+Coupling:
+
+These systems are "loosely coupled" (more so than multicomputers).
+
+Strength: Computers can be used for a wide variety of applications.
+
+Weakness: Programming is difficult due to the lack of a common underlying model.
+
+
+2. Significant Challenges
+There are three major consequences of being distributed:
+
+
+
+Concurrency: Different computers can execute programs at the same time, sharing resources like files. coordinating these programs is a recurring issue.
+
+No Global Clock: Computers cannot synchronize their clocks accurately, so programs coordinate by exchanging messages rather than time. Clock drift rates (deviation from a perfect reference clock) differ between computers.
+
+Independent Failures: A system can fail in new ways. For example, a network fault might isolate a computer that is otherwise still working, but other components might not be able to detect if it has failed or is just slow. Components can fail independently.
+
+
+3. System Models: Synchronous vs. Asynchronous
+Synchronous Distributed Systems:
+These are systems where strict bounds (limits) are defined:
+
+
+
+Process Speed: Time to execute a step has known lower and upper bounds.
+
+Message Delay: Messages are received within a known bounded time.
+
+Clock Drift: Local clocks drift from real time within a known bound.
+
+Advantage: You can use timeouts to detect process failures.
+Asynchronous Distributed Systems (e.g., The Internet):
+
+No Bounds: There are no limits on process execution speeds, message transmission delays, or clock drift rates.
+
+Implication: You cannot guarantee how long a file transfer will take.
+
+Limitations: Some problems (like multimedia streaming requiring strict deadlines) cannot be solved in an asynchronous system.
+
+
+4. Grid vs. Cluster Computing
+Grid Computing:
+
+
+
+Definition: A distributed system that connects multiple (often geographically dispersed) computers to work as a virtual supercomputer.
+
+Key Features:
+
+Resource Sharing: Combines storage and power across machines.
+
+Heterogeneous: Different hardware, OS, and networks.
+
+Decentralized: No single authority; different organizations own different parts.
+
+Scalable: Easy to add more computers.
+Cluster Computing:
+
+
+Definition: A group of interconnected computers (nodes) working together as a single unified system, usually in the same location.
+
+Key Features:
+
+Tightly Coupled: Connected via high-speed local networks (LAN).
+
+Homogeneous: Similar hardware and OS.
+
+Single Administration: Managed by one organization.
+
+High Availability: If one node fails, others take over.
+Types of Clusters:
+
+
+High-Performance Computing (HPC): Used for scientific simulations and AI (supercomputing).
+
+High-Availability (HA): Ensures uptime for critical systems like banking.
+
+Load Balancing: Distributes workload across servers (e.g., web servers) to optimize performance.
+
+
+5. Event Ordering
+Since there is no global clock, we order events based on "Logical Time".
+The Happened-Before Relation (\rightarrow):
+Lamport defined this relation to capture causal precedence:
+
+
+
+HB1 (Same Process): If event a happens before b in the same process, then a \rightarrow b.
+
+HB2 (Messages): The event of sending a message (send(m)) always happens before receiving it (receive(m)).
+
+HB3 (Transitivity): If a \rightarrow b and b \rightarrow c, then a \rightarrow c.
+Concurrency:
+
+Two events are concurrent (a || e) if neither caused the other (no path of messages between them).
+
+They might happen at different physical times, but logically they are concurrent because they don't affect each other.
+
+
+6. Logical Clocks (Lamport Clocks)
+A software counter (L_i) maintained by each process to timestamp events.
+Rules:
+
+
+
+LC1 (Internal): Before any event, increment the counter: L_i := L_i + 1.
+
+LC2 (Communication):
+
+Sender piggybacks its timestamp t = L_i on the message.
+
+Receiver updates its clock: L_j := \max(L_j, t) + 1.
+Limitation:
+
+
+If a \rightarrow b, then L(a) &lt; L(b).
+
+However, if L(a) &lt; L(b), we cannot infer that a \rightarrow b. They might be concurrent.
+
+
+7. Vector Clocks
+Developed to solve the limitation of Lamport clocks. Each process maintains an array of N integers (where N is the number of processes).
+Rules:
+
+
+
+VC1 (Init): Initialize all values to 0.
+
+VC2 (Event): Before tagging an event, process P_i increments its own index: V_i[i] := V_i[i] + 1.
+
+VC3 (Send): Include the vector V in the message.
+
+VC4 (Receive): Upon receiving a vector t, update the local vector: V_i[j] := \max(V_i[j], t[j]) for all j.
+Advantage:
+
+We can compare timestamps to determine causality. V(a) &lt; V(b) if and only if a \rightarrow b.
+
+We can detect concurrent events by inspecting timestamps.
+
+Disadvantage: Requires storage and message payload proportional to N.
+
+
+8. Communication Models
+
+
+
+FIFO (First-In, First-Out): Messages form a queue; order is preserved per channel.
+
+Non-FIFO: Messages can be received in random order.
+
+Causal Ordering (CO): Based on the happened-before relation. If sending m_1 caused sending m_2, then m_1 must be received before m_2. This implies FIFO.
+
+Significance: Simplifies distributed algorithm design (e.g., database updates) by providing built-in synchronization.
+
+
+
+9. Global State & Snapshots
+Global State: The collection of local states of all processes plus the state of all communication channels (messages in transit).
+Consistent vs. Inconsistent:
+
+
+
+Consistent State: If a message is recorded as "received", it must also be recorded as "sent". An effect cannot exist without a cause.
+
+Inconsistent State: A message is seen as received but not sent (impossible in reality, but can happen in a bad snapshot).
+
+Cuts: A "cut" is a line drawn across the timeline. A consistent cut does not capture any messages traveling from the future back to the past.
+
+
+10. Chandy-Lamport Snapshot Algorithm
+An algorithm to record a consistent global state in a system with FIFO channels.
+The "Marker" Message:
+A special control message used to separate messages to be included in the snapshot from those that shouldn't.
+Rules:
+
+
+
+Marker Sending Rule:
+
+Process records its state.
+
+Immediately sends a marker on all outgoing channels before sending any other messages.
+
+
+Marker Receiving Rule:
+
+If a process receives a marker and hasn't recorded its state yet: Record state, mark channel as empty, and send markers out.
+
+If it has already recorded its state: Record the state of that channel (all messages received since the state recording up to this marker).</pre>
+      </div>
+    </main>
+
+    <footer class="card">
+      <div class="subtitle">Static page — content preserved exactly as provided.</div>
+    </footer>
+  </div>
+</body>
+</html>
