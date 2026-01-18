@@ -138,7 +138,7 @@ There are three major consequences of being distributed:
 
 Concurrency: Different computers can execute programs at the same time, sharing resources like files. coordinating these programs is a recurring issue.
 
-No Global Clock: Computers cannot synchronize their clocks accurately, so programs coordinate by exchanging messages rather than time. Clock drift rates (deviation from a perfect reference clock) differ between computers.
+No Global Clock: Computers can't synchronize their clocks accurately, so programs coordinate by exchanging messages rather than time. Clock drift rates (deviation from a perfect reference clock) differ between computers.
 
 Independent Failures: A system can fail in new ways. For example, a network fault might isolate a computer that is otherwise still working, but other components might not be able to detect if it has failed or is just slow. Components can fail independently.
 
